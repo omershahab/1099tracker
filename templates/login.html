@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="auth">
+<section class="card narrow">
   <h2>Sign in</h2>
-  <form method="post" action="{{ url_for('login', next=request.args.get('next')) }}">
+  <form method="post" action="{{ url_for('login', next=request.args.get('next')) }}" class="form">
     <label>Username<input name="username" required></label>
     <label>Password<input type="password" name="password" required></label>
-    <button type="submit">Login</button>
+    <button type="submit" class="btn primary">Login</button>
   </form>
   <p><small>Set <code>APP_USER</code> and <code>APP_PASS</code> in Replit Secrets first.</small></p>
 </section>

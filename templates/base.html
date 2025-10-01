@@ -8,8 +8,11 @@
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-<header>
-  <h1>1099 Expense Tracker</h1>
+<header class="app-header">
+  <div class="brand">
+    <div class="logo">1099</div>
+    <h1>Expense Tracker</h1>
+  </div>
   <nav>
     {% if session.get('auth') %}
       <a href="{{ url_for('home') }}">Dashboard</a>
@@ -32,12 +35,12 @@
   {% endif %}
 {% endwith %}
 
-<main>
+<main class="container">
   {% block content %}{% endblock %}
 </main>
 
-<footer>
-  <small>Tip: keep original receipts. Mileage auto-calc uses the record’s rate; update per IRS each year.</small>
+<footer class="app-footer">
+  <small>Tip: keep original receipts. Mileage auto-calc uses the record’s rate; update when IRS changes.</small>
 </footer>
 </body>
 </html>

@@ -1,44 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="summary">
-  <form method="get" action="{{ url_for('home') }}">
-    <label>Year
-      <input type="number" name="year" value="{{ year }}">
-    </label>
-    <button type="submit">Go</button>
-  </form>
+<section class="card">
   <h2>Year {{ year }} Summary</h2>
+  <form method="get" action="{{ url_for('home') }}" class="form-inline">
+    <label>Year <input type="number" name="year" value="{{ year }}"></label>
+    <button type="submit" class="btn">Go</button>
+  </form>
   <div class="cards">
-    <div class="card">
+    <div class="stat">
       <h3>Total Spent (Deductible-marked)</h3>
-      <p class="big">${{ "%.2f"|format((totals['spent'] or 0) if totals else 0) }}</p>
+      <div class="big">${{ "%.2f"|format((totals['spent'] or 0) if totals else 0) }}</div>
       <small>Includes mileage at full rate; excludes rows you marked non-deductible.</small>
     </div>
-    <div class="card">
+    <div class="stat">
       <h3>Estimated Deductible</h3>
-      <p class="big">${{ "%.2f"|format((totals['deductible'] or 0) if totals else 0) }}</p>
-      <small>Meals are auto-counted at 50%.</small>
+      <div class="big">${{ "%.2f"|format((totals['deductible'] or 0) if totals else 0) }}</div>
+      <small>Meals auto-counted at 50%.</small>
     </div>
   </div>
 </section>
 
-<section class="bycat">
-  <h2>By Category</h2>
-  <table>
-    <thead><tr><th>Category</th><th>Spent</th><th>Deductible</th></tr></thead>
-    <tbody>
-      {% for r in rows %}
-      <tr>
-        <td>{{ r['category'] }}</td>
-        <td>${{ "%.2f"|format(r['spent'] or 0) }}</td>
-        <td>${{ "%.2f"|format(r['deductible'] or 0) }}</td>
-      </tr>
-      {% endfor %}
-      {% if (rows|length) == 0 %}
-      <tr><td colspan="3" style="text-align:center;">No data yet.</td></tr>
-      {% endif %}
-    </tbody>
-  </table>
-  <p><small>Note: Mileage uses the stored rate on each record (default 0.67). Meals are halved for estimated deductibility.</small></p>
+<section class="card">
+  <h3>By Category</h3>
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Category</th><th>Spent</th><th>Deductible</th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td>{{ r['category'] }}</td>
+          <td>${{ "%.2f"|format(r['spent'] or 0) }}</td>
+          <td>${{ "%.2f"|format(r['deductible'] or 0) }}</td>
+        </tr>
+        {% endfor %}
+        {% if (rows|length) == 0 %}
+        <tr><td colspan="3" style="text-align:center;">No data yet.</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 </section>
 {% endblock %}

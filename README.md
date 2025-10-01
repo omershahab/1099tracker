@@ -1,13 +1,13 @@
-# 1099 Expense Tracker — v2.2 (Meals 50% deductible view)
+# 1099 Expense Tracker — v2.3 (UI refresh + monthly toggle)
 
+- Monthly chart toggle between *Spent* and *Deductible* (Meals @50%).
+- Friendlier UI: cleaner layout, spacing, and a sticky **Quick Add** bar.
+- Faster Add Expense: today's date prefilled; tax year auto; amount accepts `$`/commas;
+  last category remembered; vendor→category autosuggest; "Save & Add Another".
 - Deployment-ready (Gunicorn + `$PORT`).
-- Simple login via env (APP_USER/APP_PASS).
-- CSV import + charts.
-- NEW: Dashboard shows **Spent** vs **Estimated Deductible** (Meals auto-halved).
-- `/api/totals?mode=deductible` returns category totals with Meals at 50%.
 
-## Replit quick start
-1. Import this zip.
-2. Secrets: `SECRET_KEY`, `APP_USER`, `APP_PASS`.
+## Quick start
+1. Import the zip to Replit.
+2. Set Secrets: `SECRET_KEY`, `APP_USER`, `APP_PASS`.
 3. `pip install -r requirements.txt`
-4. **Run** for dev; **Deployments** uses: `gunicorn -w 2 -b 0.0.0.0:$PORT main:app`
+4. **Run** (dev) or **Deploy** with `gunicorn -w 2 -b 0.0.0.0:$PORT main:app`
