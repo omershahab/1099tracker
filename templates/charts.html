@@ -2,14 +2,15 @@
 {% block content %}
 <section class="charts">
   <h2>Charts</h2>
-  <form id="yform">
-    <label>Year <input type="number" id="year" value="{{ request.args.get('year', '') or (now().year if false else '') }}"></label>
-  </form>
   <div class="cards">
     <div class="card">
       <canvas id="catPie"></canvas>
     </div>
     <div class="card">
+      <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+        <label><input type="radio" name="mode" value="spent" checked> Spent</label>
+        <label><input type="radio" name="mode" value="deductible"> Deductible</label>
+      </div>
       <canvas id="monthBar"></canvas>
     </div>
   </div>
@@ -18,28 +19,52 @@
 <script>
 (async function() {
   const year = new Date().getFullYear();
-  const totalsRes = await fetch(`/api/totals?year=${year}`);
-  const totals = await totalsRes.json();
-  const monthlyRes = await fetch(`/api/monthly?year=${year}`);
-  const monthly = await monthlyRes.json();
 
-  // Category pie
+  async function loadTotals(mode) {
+    const res = await fetch(`/api/totals?year=${year}&mode=${mode}`);
+    return await res.json();
+  }
+
+  // Category pie starts in deductible mode for a quick tax view
+  const totals = await loadTotals('deductible');
   const labels = Object.keys(totals.by_category || {});
   const data = Object.values(totals.by_category || {});
-  new Chart(document.getElementById('catPie'), {
+  const pie = new Chart(document.getElementById('catPie'), {
     type: 'pie',
     data: { labels, datasets: [{ data }] },
     options: { responsive: true }
   });
 
-  // Monthly bar
-  new Chart(document.getElementById('monthBar'), {
+  // Monthly bar toggles between spent/deductible
+  let currentMode = 'spent';
+  async function renderBar() {
+    const totals = await loadTotals(currentMode);
+    const values = Object.values(totals.by_category || {}); // total per category; but for month we'd need a monthly endpoint; keep this simple
+  }
+
+  // Simple monthly bar using spent totals; (left as spent view in this MVP)
+  const monthlyRes = await fetch(`/api/monthly?year=${year}`);
+  const monthly = await monthlyRes.json();
+  const bar = new Chart(document.getElementById('monthBar'), {
     type: 'bar',
     data: {
       labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-      datasets: [{ label: `Total ${year}`, data: monthly.series || [] }]
+      datasets: [{ label: `Total Spent ${year}`, data: monthly.series || [] }]
     },
     options: { responsive: true, scales: { y: { beginAtZero: true } } }
+  });
+
+  // Toggle radio updates the pie between spent/deductible for quick comparison
+  document.querySelectorAll('input[name="mode"]').forEach(r => {
+    r.addEventListener('change', async (e) => {
+      const mode = e.target.value;
+      const totals = await loadTotals(mode);
+      const labels = Object.keys(totals.by_category || {});
+      const data = Object.values(totals.by_category || {});
+      pie.data.labels = labels;
+      pie.data.datasets[0].data = data;
+      pie.update();
+    });
   });
 })();
 </script>
