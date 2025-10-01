@@ -1,0 +1,22 @@
+:root { font-family: Inter, system-ui, -apple-system, Arial, sans-serif; }
+body { margin: 0; background: #fafafa; color: #111; }
+header { display:flex; justify-content:space-between; align-items:center; padding: 12px 16px; background: #111; color: #fff; }
+header h1 { font-size: 18px; margin:0; }
+nav a { color:#fff; margin-left:14px; text-decoration:none; opacity:.9; }
+nav a:hover { opacity:1; text-decoration:underline; }
+main { padding: 16px; max-width: 1100px; margin:0 auto; }
+.flash > div { background:#e6ffed; border:1px solid #b7ebc6; padding:8px 12px; margin:8px 0; border-radius:8px; }
+.filters form, .add form, .auth form { display:block; background:#fff; padding:12px; border-radius:10px; border:1px solid #eee; }
+.add h2, .table h2, .summary h2, .bycat h2, .auth h2 { margin-top:16px; }
+.grid { display:grid; grid-template-columns: repeat(4, minmax(160px, 1fr)); gap:10px; }
+.grid .full { grid-column: 1 / -1; }
+input, select, textarea, button { width:100%; padding:8px; border:1px solid #ddd; border-radius:8px; font-size:14px; }
+button { cursor:pointer; }
+.table table, .bycat table { width:100%; border-collapse: collapse; background:#fff; border:1px solid #eee; border-radius:10px; overflow:hidden; }
+.table th, .table td, .bycat th, .bycat td { padding:10px; border-bottom:1px solid #f0f0f0; font-size:14px; vertical-align: top; }
+.table th { background:#fafafa; text-align:left; }
+.cards { display:flex; gap:12px; flex-wrap: wrap; }
+.card { background:#fff; border:1px solid #eee; padding:16px; border-radius:10px; min-width:280px; flex:1; }
+.big { font-size:28px; font-weight:700; }
+footer { padding: 24px 16px; color:#666; text-align:center; }
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } }

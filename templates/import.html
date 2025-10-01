@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="import">
+  <h2>Import CSV</h2>
+  <form method="post" enctype="multipart/form-data">
+    <input type="file" name="csv" accept=".csv" required>
+    <button type="submit">Upload & Import</button>
+  </form>
+  <p><small>Expected headers (case-insensitive): date, description, vendor, amount, category, payment_method, tax_year, project, location, receipt_url, miles, mileage_rate, is_deductible, notes.</small></p>
+</section>
+{% endblock %}

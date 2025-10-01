@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="filters">
+  <form method="get" action="{{ url_for('list_expenses') }}">
+    <label>Year
+      <input type="number" name="year" value="{{ request.args.get('year','') }}" placeholder="2025">
+    </label>
+    <label>Month
+      <input type="number" min="1" max="12" name="month" value="{{ request.args.get('month','') }}" placeholder="9">
+    </label>
+    <label>Category
+      <select name="category">
+        <option>All</option>
+        {% for c in categories %}<option {{ 'selected' if request.args.get('category')==c else '' }}>{{ c }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Search
+      <input type="text" name="q" value="{{ request.args.get('q','') }}" placeholder="vendor, description, notes">
+    </label>
+    <button type="submit">Filter</button>
+  </form>
+</section>
+
+<section class="add">
+  <h2>Add Expense</h2>
+  <form method="post" action="{{ url_for('add') }}" enctype="multipart/form-data">
+    <div class="grid">
+      <label>Date<input type="date" name="dt" required></label>
+      <label>Amount ($)<input type="number" step="0.01" name="amount" required></label>
+      <label>Category
+        <select name="category">
+          {% for c in categories %}<option>{{ c }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Vendor<input name="vendor" placeholder="Delta, UBER, NBME, etc."></label>
+      <label>Description<input name="description" placeholder="Hospital call hotel, DEA renewal, etc."></label>
+      <label>Payment Method<input name="payment_method" placeholder="Amex, ACH, etc."></label>
+      <label>Tax Year<input type="number" name="tax_year" placeholder="2025"></label>
+      <label>Project<input name="project" placeholder="Locums site, client"></label>
+      <label>Location<input name="location" placeholder="City/State"></label>
+      <label>Receipt<input type="file" name="receipt" accept=".png,.jpg,.jpeg,.pdf"></label>
+      <label>Miles<input type="number" step="0.1" name="miles" value="0" placeholder="e.g., 18.2"></label>
+      <label>Mileage Rate<input type="number" step="0.01" name="mileage_rate" value="0.67"></label>
+      <label><input type="checkbox" name="is_deductible" checked> Deductible</label>
+      <label class="full">Notes<textarea name="notes" rows="2"></textarea></label>
+    </div>
+    <button type="submit">Save</button>
+  </form>
+</section>
+
+<section class="table">
+  <h2>Expenses</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Vendor/Desc</th><th>Category</th><th>$</th><th>Miles</th><th>Calc</th><th>Receipt</th><th>—</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      {% set calc = (r['amount'] or 0) + ((r['miles'] or 0) * (r['mileage_rate'] or 0)) %}
+      <tr>
+        <td>{{ r['dt'] }}</td>
+        <td><strong>{{ r['vendor'] }}</strong><br><small>{{ r['description'] }}</small></td>
+        <td>{{ r['category'] }}</td>
+        <td>{{ "%.2f"|format(r['amount'] or 0) }}</td>
+        <td>{{ r['miles'] or 0 }}</td>
+        <td>{{ "%.2f"|format(calc) }}</td>
+        <td>
+          {% if r['receipt_path'] %}
+            <a href="{{ r['receipt_path'] }}" target="_blank">View</a>
+          {% else %}-{% endif %}
+        </td>
+        <td>
+          <form method="post" action="{{ url_for('delete_expense', expense_id=r['id']) }}" onsubmit="return confirm('Delete this expense?')">
+            <button type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      {% if rows|length == 0 %}
+      <tr><td colspan="8" style="text-align:center;">No records found.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

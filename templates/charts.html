@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="charts">
+  <h2>Charts</h2>
+  <form id="yform">
+    <label>Year <input type="number" id="year" value="{{ request.args.get('year', '') or (now().year if false else '') }}"></label>
+  </form>
+  <div class="cards">
+    <div class="card">
+      <canvas id="catPie"></canvas>
+    </div>
+    <div class="card">
+      <canvas id="monthBar"></canvas>
+    </div>
+  </div>
+</section>
+
+<script>
+(async function() {
+  const year = new Date().getFullYear();
+  const totalsRes = await fetch(`/api/totals?year=${year}`);
+  const totals = await totalsRes.json();
+  const monthlyRes = await fetch(`/api/monthly?year=${year}`);
+  const monthly = await monthlyRes.json();
+
+  // Category pie
+  const labels = Object.keys(totals.by_category || {});
+  const data = Object.values(totals.by_category || {});
+  new Chart(document.getElementById('catPie'), {
+    type: 'pie',
+    data: { labels, datasets: [{ data }] },
+    options: { responsive: true }
+  });
+
+  // Monthly bar
+  new Chart(document.getElementById('monthBar'), {
+    type: 'bar',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+      datasets: [{ label: `Total ${year}`, data: monthly.series || [] }]
+    },
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+  });
+})();
+</script>
+{% endblock %}
